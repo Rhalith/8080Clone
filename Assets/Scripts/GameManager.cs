@@ -14,6 +14,19 @@ namespace Assets.Scripts
         [SerializeField] private Sprite _tileFourty;
         [SerializeField] private Sprite _tileEighty;
         #endregion
+
+        void Awake()
+        {
+            if (_instance != null && _instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            _instance = this;
+
+            DontDestroyOnLoad(gameObject);
+        }
         public static Sprite TileFive
         {
             get
@@ -54,19 +67,6 @@ namespace Assets.Scripts
                 if (_instance == null) return null;
                 return _instance._tileEighty;
             }
-        }
-
-        void Awake()
-        {
-            if (_instance != null && _instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            _instance = this;
-
-            DontDestroyOnLoad(gameObject);
         }
     }
 

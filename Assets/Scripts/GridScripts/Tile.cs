@@ -21,19 +21,20 @@ namespace Assets.Scripts.GridScripts
         #region Variables
         private TileSpec _tileSpec;
         private bool _isPlayerClicked = false;
-        #endregion
-        // Start is called before the first frame update
-        void Start()
-        {
 
-        }
+        public TileSpec TileSpec { get => _tileSpec; set => _tileSpec = value; }
+        #endregion
         private void OnMouseDown()
         {
-            _renderer.sprite = _manager.GeneratedTile;
-            _tileSpec = _manager.CurrentTile;
-            _manager.AddTile(this);
-            _isPlayerClicked = true;
-            _manager.IsPlayerClicking = true;
+            if (!_isPlayerClicked)
+            {
+                _manager.UseGeneratedTile();
+                _renderer.sprite = _manager.CurrentTileSprite;
+                _tileSpec = _manager.CurrentTileSpec;
+                _manager.AddTile(this);
+                _isPlayerClicked = true;
+                _manager.IsPlayerClicking = true;
+            }
         }
         private void OnMouseExit()
         {
@@ -42,10 +43,11 @@ namespace Assets.Scripts.GridScripts
                 if (_isPlayerClicked)
                 {
                     _manager.DivideTile();
-                    _renderer.sprite = _manager.GeneratedTile;
-                    --_tileSpec;
+                    _renderer.sprite = _manager.CurrentTileSprite;
+                    if (!_tileSpec.Equals(TileSpec.five)) --_tileSpec;
                 }
             }
+
         }
         private void OnMouseEnter()
         {
@@ -57,15 +59,25 @@ namespace Assets.Scripts.GridScripts
                     {
                         _isPlayerClicked = true;
                         _manager.AddTile(this);
-                        _renderer.sprite = _manager.GeneratedTile;
-                        _tileSpec = _manager.CurrentTile;
+                        _renderer.sprite = _manager.CurrentTileSprite;
+                        _tileSpec = _manager.CurrentTileSpec;
                     }
                 }
             }
         }
         private void OnMouseUp()
         {
-            _manager.IsPlayerClicking = false;
+            if (_isPlayerClicked)
+            {
+ 
+                _manager.IsPlayerClicking = false;
+                _manager.GenerateNewTile();
+            }
+        }
+        //TODO
+        private void CheckTile()
+        {
+
         }
     }
 }
