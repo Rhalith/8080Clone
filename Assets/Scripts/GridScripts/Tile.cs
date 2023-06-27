@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts.GridScripts
@@ -69,15 +70,44 @@ namespace Assets.Scripts.GridScripts
         {
             if (_isPlayerClicked)
             {
- 
                 _manager.IsPlayerClicking = false;
                 _manager.GenerateNewTile();
+                List<Tile> tiles = new();
+                CheckTile(tiles);
+                if(tiles.Count > 2) 
+                {
+                    MergeTiles(tiles);
+                }
             }
         }
-        //TODO
-        private void CheckTile()
+        public void CheckTile(List<Tile> tiles)
         {
+            if (TileSpec.Equals(TileSpec.none)) return;
+            CheckNextTile(_aboveTile, tiles);
+            CheckNextTile(_belowTile, tiles);
+            CheckNextTile(_leftTile, tiles);
+            CheckNextTile(_rightTile, tiles);
+        }
 
+        private void CheckNextTile(Tile tile, List<Tile> tiles)
+        {
+            if (tile != null)
+            {
+                if (tile.TileSpec == this.TileSpec)
+                {
+                    if (tiles.Contains(tile)) return;
+                    tiles.Add(tile);
+                    tile.CheckTile(tiles);
+                }
+            }
+        }
+
+        private void MergeTiles(List<Tile> tiles)
+        {
+            foreach (var item in tiles)
+            {
+                Debug.Log(item.name);
+            }
         }
     }
 }
