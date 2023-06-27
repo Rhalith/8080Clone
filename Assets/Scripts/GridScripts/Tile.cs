@@ -71,16 +71,19 @@ namespace Assets.Scripts.GridScripts
             if (_isPlayerClicked)
             {
                 List<Tile> tiles = new();
-                CheckTile(tiles);
-                if(tiles.Count > 2) 
+                _manager.VisitedTiles[^1].CheckTile(tiles);
+                if (tiles.Count > 2)
                 {
                     MergeTiles(tiles);
                 }
                 tiles.Clear();
+                CheckAfterMerge(tiles, _manager.VisitedTiles[^1]._aboveTile);
+                CheckAfterMerge(tiles, _manager.VisitedTiles[^1]._belowTile);
+                CheckAfterMerge(tiles, _manager.VisitedTiles[^1]._leftTile);
+                CheckAfterMerge(tiles, _manager.VisitedTiles[^1]._rightTile);
                 _manager.IsPlayerClicking = false;
                 _manager.GenerateNewTile();
                 _manager.ClearTiles();
-
             }
         }
         public void MultiplyTile()
@@ -98,7 +101,7 @@ namespace Assets.Scripts.GridScripts
                     _renderer.sprite = GameManager.TileTen;
                     break;
                 case TileSpec.twenty:
-                    _renderer.sprite= GameManager.TileTwenty;
+                    _renderer.sprite = GameManager.TileTwenty;
                     break;
                 case TileSpec.fourty:
                     _renderer.sprite = GameManager.TileFourty;
@@ -110,7 +113,7 @@ namespace Assets.Scripts.GridScripts
                     _renderer.sprite = GameManager.TileMax;
                     break;
             }
-        }
+        } 
         //TODO
         private void ExplodeTile()
         {
@@ -153,6 +156,17 @@ namespace Assets.Scripts.GridScripts
             {
                 item.ResetTile();
             }
+        }
+
+        private void CheckAfterMerge(List<Tile> tiles, Tile tile)
+        {
+            if (tile == null) return;
+            tile.CheckTile(tiles);
+            if (tiles.Count > 2)
+            {
+                MergeTiles(tiles);
+            }
+            tiles.Clear();
         }
     }
 }
