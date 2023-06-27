@@ -70,15 +70,57 @@ namespace Assets.Scripts.GridScripts
         {
             if (_isPlayerClicked)
             {
-                _manager.IsPlayerClicking = false;
-                _manager.GenerateNewTile();
                 List<Tile> tiles = new();
                 CheckTile(tiles);
                 if(tiles.Count > 2) 
                 {
                     MergeTiles(tiles);
                 }
+                tiles.Clear();
+                _manager.IsPlayerClicking = false;
+                _manager.GenerateNewTile();
+                _manager.ClearTiles();
+
             }
+        }
+        public void MultiplyTile()
+        {
+            if (_tileSpec.Equals(TileSpec.max))
+            {
+                ExplodeTile();
+                ResetTile();
+                return;
+            }
+            _tileSpec++;
+            switch (_tileSpec)
+            {
+                case TileSpec.ten:
+                    _renderer.sprite = GameManager.TileTen;
+                    break;
+                case TileSpec.twenty:
+                    _renderer.sprite= GameManager.TileTwenty;
+                    break;
+                case TileSpec.fourty:
+                    _renderer.sprite = GameManager.TileFourty;
+                    break;
+                case TileSpec.eighty:
+                    _renderer.sprite = GameManager.TileEighty;
+                    break;
+                case TileSpec.max:
+                    _renderer.sprite = GameManager.TileMax;
+                    break;
+            }
+        }
+        //TODO
+        private void ExplodeTile()
+        {
+
+        }
+        public void ResetTile()
+        {
+            _isPlayerClicked = false;
+            _tileSpec = TileSpec.none;
+            _renderer.sprite = GameManager.EmptyTile;
         }
         public void CheckTile(List<Tile> tiles)
         {
@@ -104,9 +146,12 @@ namespace Assets.Scripts.GridScripts
 
         private void MergeTiles(List<Tile> tiles)
         {
+            int i = Random.Range(0, tiles.Count);
+            tiles[i].MultiplyTile();
+            tiles.Remove(tiles[i]);
             foreach (var item in tiles)
             {
-                Debug.Log(item.name);
+                item.ResetTile();
             }
         }
     }

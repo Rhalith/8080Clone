@@ -1091,11 +1091,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af61da16c76fc3b4c94d102e4a113d4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _emptyTile: {fileID: 21300000, guid: 66990b8664316a44cbb24df584fa5301, type: 3}
   _tileFive: {fileID: 21300000, guid: 66a0d8838924d4a4fa0ab52490f331dd, type: 3}
   _tileTen: {fileID: 21300000, guid: 036d96110fde5784fbe5b9e4900e38f0, type: 3}
   _tileTwenty: {fileID: 21300000, guid: ef118172be12e1e42954feb11ce12c8d, type: 3}
   _tileFourty: {fileID: 21300000, guid: dda5ed57cd3bfbc43bdc14ef4fc60cfe, type: 3}
   _tileEighty: {fileID: 21300000, guid: 33aed613370f34f428729c7e90c286b9, type: 3}
+  _tileMax: {fileID: 21300000, guid: 8879a284a8e8f464f94834fac4a48951, type: 3}
 --- !u!4 &651275045
 Transform:
   m_ObjectHideFlags: 0

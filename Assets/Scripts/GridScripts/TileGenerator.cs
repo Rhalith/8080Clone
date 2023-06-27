@@ -55,11 +55,11 @@ namespace Assets.Scripts.GridScripts
         }
         private void SpawnTile()
         {
-            _tileRenderer.sprite = _generatedTileSprite;
-            //_tileRenderer.sprite = GameManager.TileEighty;
+            //_tileRenderer.sprite = _generatedTileSprite;
+            _tileRenderer.sprite = GameManager.TileEighty;
             _tileRenderer.enabled = true;
-            _gridManager.AssignCurrentTile(_generatedTileSprite, _generatedTileSpec);
-            //_gridManager.AssignCurrentTile(GameManager.TileEighty, TileSpec.eighty);
+            //_gridManager.AssignCurrentTile(_generatedTileSprite, _generatedTileSpec);
+            _gridManager.AssignCurrentTile(GameManager.TileEighty, TileSpec.eighty);
         }
 
     }

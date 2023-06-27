@@ -8,11 +8,13 @@ namespace Assets.Scripts
 
         #region Tile Sprites
         [Header("Tile Sprites")]
+        [SerializeField] private Sprite _emptyTile;
         [SerializeField] private Sprite _tileFive;
         [SerializeField] private Sprite _tileTen;
         [SerializeField] private Sprite _tileTwenty;
         [SerializeField] private Sprite _tileFourty;
         [SerializeField] private Sprite _tileEighty;
+        [SerializeField] private Sprite _tileMax;
         #endregion
 
         void Awake()
@@ -26,6 +28,14 @@ namespace Assets.Scripts
             _instance = this;
 
             DontDestroyOnLoad(gameObject);
+        }
+        public static Sprite EmptyTile
+        {
+            get
+            {
+                if (_instance == null) return null;
+                return _instance._emptyTile;
+            }
         }
         public static Sprite TileFive
         {
@@ -66,6 +76,14 @@ namespace Assets.Scripts
             {
                 if (_instance == null) return null;
                 return _instance._tileEighty;
+            }
+        }
+        public static Sprite TileMax
+        {
+            get
+            {
+                if (_instance == null) return null;
+                return _instance._tileMax;
             }
         }
     }
