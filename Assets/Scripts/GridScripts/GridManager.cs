@@ -7,14 +7,18 @@ namespace Assets.Scripts.GridScripts
     {
         [SerializeField] private TileGenerator _generator;
         private bool _isPlayerClicking = false;
+        private TileSpec _previousTileSpec;
         private TileSpec _currentTileSpec;
         private Sprite _currentTileSprite;
+        private bool _isPlayerExitedFromTile = false;
 
         public List<Tile> VisitedTiles;
+        public List<Tile> VisitableTiles;
         public bool IsPlayerClicking { get => _isPlayerClicking; set => _isPlayerClicking = value; }
         public TileSpec CurrentTileSpec { get => _currentTileSpec; }
         public Sprite CurrentTileSprite { get => _currentTileSprite; }
-
+        public bool IsPlayerExitedFromTile { get => _isPlayerExitedFromTile; set => _isPlayerExitedFromTile = value; }
+        public TileSpec PreviousTileSpec { get => _previousTileSpec; set => _previousTileSpec = value; }
 
         public void AssignCurrentTile(Sprite tile, TileSpec spec)
         {
@@ -39,6 +43,7 @@ namespace Assets.Scripts.GridScripts
         }
         public void DivideTile()
         {
+            _previousTileSpec = _currentTileSpec;
             if (_currentTileSpec != TileSpec.five)
             {
                 LowerTileSpec(_currentTileSpec);
