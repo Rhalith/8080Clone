@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Assets.Scripts.GridScripts
@@ -61,14 +62,25 @@ namespace Assets.Scripts.GridScripts
         public void DisableGeneratedTile()
         {
             _tileRenderer.enabled = false;
+            gameObject.transform.localScale = new Vector3(1, 1, 1);
         }
 
         private void SpawnTile()
         {
+            StartCoroutine(nameof(GrowSpawnedTile));
             _tileRenderer.sprite = _generatedTileSprite;
             _tileRenderer.enabled = true;
             _gridManager.AssignCurrentTile(_generatedTileSprite, _generatedTileSpec);
         }
 
+        private IEnumerator GrowSpawnedTile()
+        {
+            while (gameObject.transform.localScale.x < 29.9f)
+            {
+                yield return new WaitForSeconds(0.005f);
+                gameObject.transform.localScale = new Vector3(gameObject.transform.localScale.x+0.5f, gameObject.transform.localScale.y+0.5f, 1);
+            }
+            gameObject.transform.localScale = new Vector3(30, 30, 1);
+        }
     }
 }

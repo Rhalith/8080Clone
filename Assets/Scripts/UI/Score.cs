@@ -8,6 +8,7 @@ public class Score : MonoBehaviour
     #region Other Components
     [SerializeField] private TMP_Text _scoreText;
     #endregion
+
     #region Variables
     private int _score;
     #endregion
@@ -16,6 +17,7 @@ public class Score : MonoBehaviour
         _score = 0;
         _scoreText.text = _score.ToString();
     }
+
     public void AddScore(int score)
     {
         _score += score;

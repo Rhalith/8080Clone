@@ -7,8 +7,8 @@ namespace Assets.Scripts.GridScripts
 {
     public class Tile : MonoBehaviour
     {
-        #region Other Tiles
-        [Header("Other Tiles")]
+        #region Neighbours
+        [Header("Neigbours")]
         [SerializeField] private Tile _aboveTile;
         [SerializeField] private Tile _belowTile;
         [SerializeField] private Tile _leftTile;
@@ -17,6 +17,7 @@ namespace Assets.Scripts.GridScripts
 
         #region Other Components
         [Header("Components")]
+        [SerializeField] private GameObject _rainbowObject;
         [SerializeField] private SpriteRenderer _renderer;
         [SerializeField] private GridManager _manager;
         #endregion
@@ -73,7 +74,6 @@ namespace Assets.Scripts.GridScripts
             if (_tileSpec.Equals(TileSpec.max))
             {
                 ExplodeTile();
-                ResetTile();
                 return;
             }
             _tileSpec++;
@@ -92,13 +92,16 @@ namespace Assets.Scripts.GridScripts
                     _renderer.sprite = GameManager.TileEighty;
                     break;
                 case TileSpec.max:
-                    _renderer.sprite = GameManager.TileMax;
+                    _renderer.sprite = GameManager.EmptyTile;
+                    _rainbowObject.GetComponent<Animator>().enabled = true;
+                    _rainbowObject.GetComponent<SpriteRenderer>().sortingOrder = 2;
                     break;
             }
         }
 
         private void ExplodeTile()
         {
+            _rainbowObject.GetComponent<Animator>().SetBool("isExploded", true);
             if (_rightTile != null)
             {
                 _rightTile.ResetTile();
@@ -131,11 +134,14 @@ namespace Assets.Scripts.GridScripts
             _manager.AddScore(TileSpec.none);
         }
 
-        private void ResetTile()
+        public void ResetTile()
         {
             _isPlayerClicked = false;
             _tileSpec = TileSpec.none;
             _renderer.sprite = GameManager.EmptyTile;
+            _rainbowObject.GetComponent<SpriteRenderer>().sortingOrder = 0;
+            _rainbowObject.GetComponent<SpriteRenderer>().GetComponent<Animator>().SetBool("isExploded", false);
+            _rainbowObject.GetComponent<SpriteRenderer>().GetComponent<Animator>().enabled = false;
         }
 
         private void ClickTile()

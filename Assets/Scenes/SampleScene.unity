@@ -941,7 +941,7 @@ Transform:
   m_GameObject: {fileID: 521355372}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -750, z: 0}
-  m_LocalScale: {x: 30, y: 30, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1618209568}
@@ -1097,7 +1097,6 @@ MonoBehaviour:
   _tileTwenty: {fileID: 21300000, guid: ef118172be12e1e42954feb11ce12c8d, type: 3}
   _tileFourty: {fileID: 21300000, guid: dda5ed57cd3bfbc43bdc14ef4fc60cfe, type: 3}
   _tileEighty: {fileID: 21300000, guid: 33aed613370f34f428729c7e90c286b9, type: 3}
-  _tileMax: {fileID: 21300000, guid: 8879a284a8e8f464f94834fac4a48951, type: 3}
 --- !u!4 &651275045
 Transform:
   m_ObjectHideFlags: 0
@@ -1877,7 +1876,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _generator: {fileID: 521355374}
-  VisitedTiles: []
+  _score: {fileID: 1962344340}
 --- !u!1001 &1495350795
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2835,6 +2834,7 @@ GameObject:
   - component: {fileID: 1962344337}
   - component: {fileID: 1962344339}
   - component: {fileID: 1962344338}
+  - component: {fileID: 1962344340}
   m_Layer: 5
   m_Name: score
   m_TagString: Untagged
@@ -2959,6 +2959,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1962344336}
   m_CullTransparentMesh: 1
+--- !u!114 &1962344340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1962344336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6736150f8f3943c449ce1c2aad893c5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scoreText: {fileID: 1962344338}
 --- !u!114 &1965785892 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1404295068426161387, guid: 6e091e0ac5cbb354eb707e9ddd70314a, type: 3}
@@ -3273,6 +3286,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1682052149985736908, guid: 6e091e0ac5cbb354eb707e9ddd70314a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7253523267775630589, guid: 6e091e0ac5cbb354eb707e9ddd70314a, type: 3}
+      propertyPath: m_SortingOrder
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7643087522918810703, guid: 6e091e0ac5cbb354eb707e9ddd70314a, type: 3}

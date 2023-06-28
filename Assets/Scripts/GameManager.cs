@@ -14,7 +14,6 @@ namespace Assets.Scripts
         [SerializeField] private Sprite _tileTwenty;
         [SerializeField] private Sprite _tileFourty;
         [SerializeField] private Sprite _tileEighty;
-        [SerializeField] private Sprite _tileMax;
         #endregion
 
         void Awake()
@@ -76,14 +75,6 @@ namespace Assets.Scripts
             {
                 if (_instance == null) return null;
                 return _instance._tileEighty;
-            }
-        }
-        public static Sprite TileMax
-        {
-            get
-            {
-                if (_instance == null) return null;
-                return _instance._tileMax;
             }
         }
     }
