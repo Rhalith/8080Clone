@@ -6,17 +6,25 @@ namespace Assets.Scripts.GridScripts
     {
 
         #region Other Components
-        private Sprite _generatedTileSprite;
         [SerializeField] private SpriteRenderer _tileRenderer;
         [SerializeField] private GridManager _gridManager;
+        #endregion
+
+        #region Variables
+        private Sprite _generatedTileSprite;
         private TileSpec _generatedTileSpec;
+        #endregion
+
+        #region Getters&Setters
         public Sprite GeneratedTileSprite { get => _generatedTileSprite; }
         public TileSpec GeneratedTileSpec { get => _generatedTileSpec; }
         #endregion
+
         void Start()
         {
             GenerateTile();
         }
+
         public void GenerateTile()
         {
             int i = Random.Range(0, 5);
@@ -49,17 +57,17 @@ namespace Assets.Scripts.GridScripts
             }
             SpawnTile();
         }
-        public void UseGeneratedTile()
+
+        public void DisableGeneratedTile()
         {
             _tileRenderer.enabled = false;
         }
+
         private void SpawnTile()
         {
             _tileRenderer.sprite = _generatedTileSprite;
-            //_tileRenderer.sprite = GameManager.TileEighty;
             _tileRenderer.enabled = true;
             _gridManager.AssignCurrentTile(_generatedTileSprite, _generatedTileSpec);
-            //_gridManager.AssignCurrentTile(GameManager.TileEighty, TileSpec.eighty);
         }
 
     }

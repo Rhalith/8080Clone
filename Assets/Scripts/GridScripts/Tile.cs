@@ -22,77 +22,24 @@ namespace Assets.Scripts.GridScripts
         #endregion
 
         #region Variables
-        private TileSpec _tileSpec;
+        private TileSpec _tileSpec = TileSpec.none;
         private bool _isPlayerClicked = false;
-
-        public TileSpec TileSpec { get => _tileSpec; set => _tileSpec = value; }
-
         #endregion
+
+        #region Mouse Functions
         private void OnMouseDown()
         {
-            if (!_isPlayerClicked)
-            {
-                _manager.UseGeneratedTile();
-                _renderer.sprite = _manager.CurrentTileSprite;
-                _tileSpec = _manager.CurrentTileSpec;
-                _manager.AddTile(this);
-                _manager.VisitableTiles = FillVisitableList();
-                _isPlayerClicked = true;
-                _manager.IsPlayerClicking = true;
-            }
+            ClickTile();
         }
         private void OnMouseExit()
         {
-            if (_manager.IsPlayerClicking)
-            {
-                if (_isPlayerClicked)
-                {
-                    if (!_tileSpec.Equals(TileSpec.five))
-                    {
-                        _manager.IsPlayerExitedFromTile = true;
-                        _manager.DivideTile();
-                        _renderer.sprite = _manager.CurrentTileSprite;
-                        --_tileSpec;
-                    }
-                    else if (_tileSpec.Equals(TileSpec.five))
-                    {
-                        _manager.IsPlayerClicking = false;
-                        _renderer.sprite = _manager.CurrentTileSprite;
-                    }
-                }
-            }
+            ExitTile();
         }
         private void OnMouseEnter()
         {
             if (_manager.VisitableTiles.Contains(this))
             {
-                if (_manager.IsPlayerClicking)
-                { 
-                    if (!_isPlayerClicked)
-                    {
-                        _manager.IsPlayerExitedFromTile = false;
-                        if (!_manager.CurrentTileSpec.Equals(TileSpec.five))
-                        {
-                            _manager.VisitableTiles.Clear();
-                            _manager.VisitableTiles = FillVisitableList();
-                            _isPlayerClicked = true;
-                            _manager.AddTile(this);
-                            _renderer.sprite = _manager.CurrentTileSprite;
-                            _tileSpec = _manager.CurrentTileSpec;
-                        }
-                        else if (_manager.PreviousTileSpec.Equals(TileSpec.ten))
-                        {
-                            _manager.DivideTile();
-                            _manager.UseGeneratedTile();
-                            _renderer.sprite = _manager.CurrentTileSprite;
-                            _tileSpec = _manager.CurrentTileSpec;
-                            _manager.AddTile(this);
-                            _manager.VisitableTiles = FillVisitableList();
-                            _isPlayerClicked = true;
-                            _manager.IsPlayerClicking = false;
-                        }
-                    }
-                }
+                EnterTile();
             }
             else
             {
@@ -103,103 +50,25 @@ namespace Assets.Scripts.GridScripts
         {
             if (_isPlayerClicked)
             {
-                if (_manager.VisitableTiles.SequenceEqual(_manager.VisitedTiles[^1].FillVisitableList()))
+                if (_manager.VisitableTiles.SequenceEqual(_manager.VisitedTiles[^1].GetVisitableList()))
                 {
-                    if (_manager.IsPlayerExitedFromTile) 
+                    if (_manager.IsPlayerExitedFromTile)
                     {
                         _manager.VisitedTiles[^1].MultiplyTile();
-                    } 
+                    }
                 }
-
-                List<Tile> tiles = new();
-                _manager.VisitedTiles[^1].CheckTile(tiles);
-                if (tiles.Count > 2)
-                {
-                    MergeTiles(tiles);
-                }
-                tiles.Clear();
-                CheckAfterMerge(tiles, _manager.VisitedTiles[^1]._aboveTile);
-                CheckAfterMerge(tiles, _manager.VisitedTiles[^1]._belowTile);
-                CheckAfterMerge(tiles, _manager.VisitedTiles[^1]._leftTile);
-                CheckAfterMerge(tiles, _manager.VisitedTiles[^1]._rightTile);
-
-                _manager.IsPlayerExitedFromTile = false;
-                _manager.IsPlayerClicking = false;
-                _manager.GenerateNewTile();
-                _manager.ClearTiles();
-                _manager.VisitableTiles.Clear();
+                MergeTiles();
+                ResetManager();
             }
         }
+        #endregion
 
-        //TODO
-        private void ExplodeTile()
+        private void AddScore()
         {
-
-        }
-
-        private List<Tile> FillVisitableList()
-        {
-            List<Tile> tiles = new();
-            if(_rightTile != null)
-                tiles.Add(_rightTile);
-            if(_leftTile != null)
-                tiles.Add(_leftTile);
-            if (_belowTile != null)
-                tiles.Add(_belowTile);
-            if (_aboveTile != null)
-                tiles.Add(_aboveTile);
-            return tiles;
-        }
-        private void CheckNextTile(Tile tile, List<Tile> tiles)
-        {
-            if (tile != null)
-            {
-                if (tile.TileSpec == this.TileSpec)
-                {
-                    if (tiles.Contains(tile)) return;
-                    tiles.Add(tile);
-                    tile.CheckTile(tiles);
-                }
-            }
+            _manager.AddScore(_tileSpec);
         }
 
-        private void MergeTiles(List<Tile> tiles)
-        {
-            int i = Random.Range(0, tiles.Count);
-            tiles[i].MultiplyTile();
-            tiles.Remove(tiles[i]);
-            foreach (var item in tiles)
-            {
-                item.ResetTile();
-            }
-        }
-
-        private void CheckAfterMerge(List<Tile> tiles, Tile tile)
-        {
-            if (tile == null) return;
-            tile.CheckTile(tiles);
-            if (tiles.Count > 2)
-            {
-                MergeTiles(tiles);
-            }
-            tiles.Clear();
-        }
-
-        public void ResetTile()
-        {
-            _isPlayerClicked = false;
-            _tileSpec = TileSpec.none;
-            _renderer.sprite = GameManager.EmptyTile;
-        }
-        public void CheckTile(List<Tile> tiles)
-        {
-            if (TileSpec.Equals(TileSpec.none)) return;
-            CheckNextTile(_aboveTile, tiles);
-            CheckNextTile(_belowTile, tiles);
-            CheckNextTile(_leftTile, tiles);
-            CheckNextTile(_rightTile, tiles);
-        }
-        public void MultiplyTile()
+        private void MultiplyTile()
         {
             if (_tileSpec.Equals(TileSpec.max))
             {
@@ -227,5 +96,205 @@ namespace Assets.Scripts.GridScripts
                     break;
             }
         }
+
+        private void ExplodeTile()
+        {
+            if (_rightTile != null)
+            {
+                _rightTile.ResetTile();
+                if (_rightTile._aboveTile != null)
+                {
+                    _rightTile._aboveTile.ResetTile();
+                }
+                if (_rightTile._belowTile != null)
+                {
+                    _rightTile._belowTile.ResetTile();
+                }
+            }
+
+            if (_leftTile != null)
+            {
+                _leftTile.ResetTile();
+                if (_leftTile._aboveTile != null)
+                {
+                    _leftTile._aboveTile.ResetTile();
+                }
+                if (_leftTile._belowTile != null)
+                {
+                    _leftTile._belowTile.ResetTile();
+                }
+            }
+            if (_belowTile != null)
+                _belowTile.ResetTile();
+            if (_aboveTile != null)
+                _aboveTile.ResetTile();
+            _manager.AddScore(TileSpec.none);
+        }
+
+        private void ResetTile()
+        {
+            _isPlayerClicked = false;
+            _tileSpec = TileSpec.none;
+            _renderer.sprite = GameManager.EmptyTile;
+        }
+
+        private void ClickTile()
+        {
+            if (!_isPlayerClicked)
+            {
+                _isPlayerClicked = true;
+                _manager.IsPlayerClicking = true;
+                _manager.VisitedTiles.Add(this);
+                _manager.VisitableTiles = GetVisitableList();
+                _manager.PickGeneratedTile();
+                _renderer.sprite = _manager.CurrentTileSprite;
+                _tileSpec = _manager.CurrentTileSpec;
+            }
+        }
+
+        private void ExitTile()
+        {
+            if (_manager.IsPlayerClicking)
+            {
+                if (_isPlayerClicked)
+                {
+                    if (!_tileSpec.Equals(TileSpec.five))
+                    {
+                        _manager.IsPlayerExitedFromTile = true;
+                        _manager.DivideTile();
+                        _renderer.sprite = _manager.CurrentTileSprite;
+                        --_tileSpec;
+                    }
+                    else if (_tileSpec.Equals(TileSpec.five))
+                    {
+                        _manager.IsPlayerClicking = false;
+                        _renderer.sprite = _manager.CurrentTileSprite;
+                    }
+                }
+            }
+        }
+
+        private void EnterTile()
+        {
+            if (_manager.IsPlayerClicking)
+            {
+                if (!_isPlayerClicked)
+                {
+                    _manager.IsPlayerExitedFromTile = false;
+                    if (!_manager.CurrentTileSpec.Equals(TileSpec.five))
+                    {
+                        _isPlayerClicked = true;
+                        _renderer.sprite = _manager.CurrentTileSprite;
+                        _tileSpec = _manager.CurrentTileSpec;
+                        _manager.VisitableTiles.Clear();
+                        _manager.VisitableTiles = GetVisitableList();
+                        _manager.VisitedTiles.Add(this);
+
+                    }
+                    else if (_manager.PreviousTileSpec.Equals(TileSpec.ten))
+                    {
+                        _manager.DivideTile();
+                        _renderer.sprite = _manager.CurrentTileSprite;
+                        _tileSpec = _manager.CurrentTileSpec;
+                        _isPlayerClicked = true;
+                        _manager.VisitedTiles.Add(this);
+                        _manager.VisitableTiles = GetVisitableList();
+                        _manager.IsPlayerClicking = false;
+                    }
+                }
+            }
+        }
+
+        private void CheckTile(List<Tile> tiles)
+        {
+            if (_tileSpec.Equals(TileSpec.none)) return;
+            CheckNeighbors(tiles);
+        }
+
+        private void CheckNeighbors(List<Tile> tiles)
+        {
+            List<Tile> neighbors = new()
+            {
+                _aboveTile,
+                _belowTile,
+                _leftTile,
+                _rightTile
+            };
+            foreach (var tile in neighbors)
+            {
+                if (tile != null)
+                {
+                    if (tile._tileSpec == _tileSpec)
+                    {
+                        if (tiles.Contains(tile)) return;
+                        tiles.Add(tile);
+                        tile.CheckTile(tiles);
+                    }
+                }
+            }
+
+        }
+
+        private void StartMerge(List<Tile> tiles)
+        {
+            int i = Random.Range(0, tiles.Count);
+            tiles[i].MultiplyTile();
+            tiles[i].AddScore();
+            tiles.Remove(tiles[i]);
+            foreach (var item in tiles)
+            {
+                item.ResetTile();
+            }
+        }
+
+        private void CheckAfterMerge(List<Tile> tiles, Tile tile)
+        {
+            if (tile == null) return;
+            tile.CheckTile(tiles);
+            if (tiles.Count > 2)
+            {
+                StartMerge(tiles);
+            }
+            tiles.Clear();
+        }
+
+        private void MergeTiles()
+        {
+            List<Tile> tiles = new();
+            _manager.VisitedTiles[^1].CheckTile(tiles);
+            if (tiles.Count > 2)
+            {
+                StartMerge(tiles);
+            }
+            tiles.Clear();
+            CheckAfterMerge(tiles, _manager.VisitedTiles[^1]._aboveTile);
+            CheckAfterMerge(tiles, _manager.VisitedTiles[^1]._belowTile);
+            CheckAfterMerge(tiles, _manager.VisitedTiles[^1]._leftTile);
+            CheckAfterMerge(tiles, _manager.VisitedTiles[^1]._rightTile);
+        }
+
+        private void ResetManager()
+        {
+            _manager.IsPlayerExitedFromTile = false;
+            _manager.IsPlayerClicking = false;
+            _manager.GenerateNewTile();
+            _manager.VisitedTiles.Clear();
+            _manager.VisitableTiles.Clear();
+        }
+
+        private List<Tile> GetVisitableList()
+        {
+            List<Tile> tiles = new();
+            if(_rightTile != null)
+                tiles.Add(_rightTile);
+            if(_leftTile != null)
+                tiles.Add(_leftTile);
+            if (_belowTile != null)
+                tiles.Add(_belowTile);
+            if (_aboveTile != null)
+                tiles.Add(_aboveTile);
+            return tiles;
+        }
+
     }
 }
